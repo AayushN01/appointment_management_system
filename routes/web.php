@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\UserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,7 +12,13 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('/',[UserController::class,'loginForm'])->name('login_form');
+Route::post('/',[UserController::class,'login'])->name('user.login');
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/register',[UserController::class,'registerForm'])->name('register_form');
+Route::post('/register',[UserController::class,'register'])->name('user.register');
+
+Route::get('/logout',[UserController::class,'logout'])->name('logout');
+
+Route::get('/home',[UserController::class,'home'])->name('home');
+
