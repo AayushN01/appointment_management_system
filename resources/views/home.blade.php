@@ -14,7 +14,8 @@
     </div>
     <div class="row py-4">
         <div class="col-lg-8 offset-lg-2 col-md-12 col-12">
-            <form action="">
+            <form action="" method="POST">
+                @csrf
                 <div class="row">
                     <div class="col-lg-3 col-md-6 col-12">
                         <div class="form-group">
@@ -56,15 +57,14 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API') }}"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API') }}&libraries=places"></script>
 <script>
     $(document).ready(function(){
         var autocomplete;
-        var to = 'location';
-        // autocomplete = new google.maps.places.Autocomplete((document.getElementById(to)),{
-        //     types:['geocode']
-        // });
-
+        autocomplete = new google.maps.places.Autocomplete((document.getElementById('location')),{
+            types:['geocode']
+        });
+        console.log(autocomplete);
     });
 </script>
 
