@@ -21,6 +21,9 @@
                         <div class="form-group">
                             <label for="">Location</label>
                             <input type="text" class="form-control" name="location" id="location" required>
+                            <input type="hidden" class="form-control" name="latitude" id="latitude">
+                            <input type="hidden" class="form-control" name="longitude" id="longitude">
+                            <input type="hidden" class="form-control" name="ip" id="ip">
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 col-12">
@@ -64,7 +67,17 @@
         autocomplete = new google.maps.places.Autocomplete((document.getElementById('location')),{
             types:['geocode']
         });
-        console.log(autocomplete);
+
+        google.maps.event.addListener(autocomplete,'place_changed',function(){
+            var currentPlace = autocomplete.getPlace();
+            console.log(currentPlace);
+            $('#latitude').val(currentPlace.geometry.location.lat());
+            $('#longitude').val(currentPlace.geometry.location.lng());
+            $.getJSON("https://api.ipify.org/?format=json",function(data){
+                $('#ip').val(data.ip);
+            });
+        });
+
     });
 </script>
 
