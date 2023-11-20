@@ -56,7 +56,7 @@
 </div>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC_jDlfRb0lO5o1NZh2PxwwB1OtHUnrTVw&libraries=places"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAP_API') }}"></script>
 <script>
     $(document).ready(function(){
         var autocomplete;
