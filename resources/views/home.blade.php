@@ -24,6 +24,9 @@
                             <input type="hidden" class="form-control" name="latitude" id="latitude">
                             <input type="hidden" class="form-control" name="longitude" id="longitude">
                             <input type="hidden" class="form-control" name="ip" id="ip">
+                            <input type="text" class="form-control" name="city" id="city">
+                            <input type="text" class="form-control" name="d_time" id="d_time">
+                            <input type="text" class="form-control" name="d_km" id="d_km">
                         </div>
                     </div>
                     <div class="col-lg-3 col-md-6 col-12">
@@ -70,15 +73,68 @@
 
         google.maps.event.addListener(autocomplete,'place_changed',function(){
             var currentPlace = autocomplete.getPlace();
-            console.log(currentPlace);
             $('#latitude').val(currentPlace.geometry.location.lat());
             $('#longitude').val(currentPlace.geometry.location.lng());
             $.getJSON("https://api.ipify.org/?format=json",function(data){
-                $('#ip').val(data.ip);
+                var ip = data.ip;
+                $('#ip').val(ip);
+                getCity(ip);
             });
         });
 
     });
+
+    function getCity(ip){
+        var req = new XMLHttpRequest();
+        req.open("GET","http://ip-api.com/json/"+ip, true);
+        req.send();
+
+        req.onreadystatechange = function() {
+            if (req.readyState == 4 && req.status == 200) {
+                var ipData = JSON.parse(req.responseText);
+                var city = ipData.city;
+                $('#city').val(city);
+                calculateDistance(city);
+            }
+        };
+
+
+    }
+
+    //To run the below code google map distance matrix API should be enabled
+    function calculateDistance(city){
+        var from = $('#location').val();
+
+        var service = new google.maps.DistanceMatrixService();
+        service.getDistanceMatrix({
+            origin:city,
+            destination:from,
+            travelMode:google.maps.TravelMode.DRIVING,
+            unitSystem:google.maps.UnitSystem.metric,
+            avoidHighways:false,
+            avoidTolls:true,
+        },callback);
+    }
+
+    function callback(resp, status){
+        if(status != google.maps.DistanceMatrixStatus.OK){
+            console.log('Something went wrong!');
+        }else{
+            if(resp.rows[0].elements[0].status == "ZERO_RESULTS")
+            {
+                alert('No Path found');
+            }else{
+                var distance = resp.rows[0].elements[0].distance;
+                var duration = resp.rows[0].elements[0].duration;
+                console.log(distance, duration);
+                var distance_km = distance.value/1000; //in KM
+                var duration_min = duration.value/60; // in minutes
+                $('#d_km').val(distance_km);
+                $('#d_time').val(duration_min);
+            }
+        }
+    }
 </script>
+
 
 @endsection
